@@ -11,23 +11,30 @@ class Example(QtGui.QMainWindow):
 
     def initUI(self):
 
-        exitAction = QtGui.QAction(QtGui.QIcon('assets/exit.png'), '&Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(self.close)
-        
+        self.textEdit = QtGui.QTextEdit()
+        self.setCentralWidget(self.textEdit)
         self.statusBar()
 
-        self.toolbar = self.addToolBar('Exit')
-        self.toolbar.addAction(exitAction)
+        openFile = QtGui.QAction(QtGui.QIcon('assets/open.png'), 'Open', self)
+        openFile.setShortcut('Ctrl+O')
+        openFile.setStatusTip('Open new File')
+        openFile.triggered.connect(self.showDialog)
 
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(exitAction)
-
-        self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Tooltips')
+        fileMenu.addAction(openFile)
+        
+        self.setGeometry(300, 300, 350, 300)
+        self.setWindowTitle('File Dialog')
         self.show()
+
+    def showDialog(self):
+        fname, _ = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
+
+        f = open(fname, 'r')
+        with f:
+            data = f.read()
+            self.textEdit.setText(data)
 
     def closeEvent(self, event):
         reply = QtGui.QMessageBox.question(self, 'Message', "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
