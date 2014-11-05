@@ -3,7 +3,7 @@
 import sys
 from PySide import QtGui, QtCore
 
-class Example(QtGui.QMainWindow):
+class Example(QtGui.QWidget):
 
     def __init__(self):
         super(Example, self).__init__()
@@ -11,30 +11,22 @@ class Example(QtGui.QMainWindow):
 
     def initUI(self):
 
-        self.textEdit = QtGui.QTextEdit()
-        self.setCentralWidget(self.textEdit)
-        self.statusBar()
+        cal = QtGui.QCalendarWidget(self)
+        cal.setGridVisible(True)
+        cal.move(20, 20)
+        cal.clicked[QtCore.QDate].connect(self.showDate)
 
-        openFile = QtGui.QAction(QtGui.QIcon('assets/open.png'), 'Open', self)
-        openFile.setShortcut('Ctrl+O')
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+        self.lbl = QtGui.QLabel(self)
+        date = cal.selectedDate()
+        self.lbl.setText(date.toString())
+        self.lbl.move(130, 260)
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(openFile)
-        
         self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('File Dialog')
+        self.setWindowTitle('Calendar')
         self.show()
 
-    def showDialog(self):
-        fname, _ = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
-
-        f = open(fname, 'r')
-        with f:
-            data = f.read()
-            self.textEdit.setText(data)
+    def showDate(self, date):
+        self.lbl.setText(date.toString())
 
     def closeEvent(self, event):
         reply = QtGui.QMessageBox.question(self, 'Message', "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
