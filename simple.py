@@ -11,22 +11,27 @@ class Example(QtGui.QWidget):
 
     def initUI(self):
 
-        cal = QtGui.QCalendarWidget(self)
-        cal.setGridVisible(True)
-        cal.move(20, 20)
-        cal.clicked[QtCore.QDate].connect(self.showDate)
+        self.lbl = QtGui.QLabel("Ubuntu", self)
 
-        self.lbl = QtGui.QLabel(self)
-        date = cal.selectedDate()
-        self.lbl.setText(date.toString())
-        self.lbl.move(130, 260)
+        combo = QtGui.QComboBox(self)
+        combo.addItem('Ubuntu')
+        combo.addItem('Mandriva')
+        combo.addItem('Fedora')
+        combo.addItem('Red Hat')
+        combo.addItem('Gentoo')
+
+        combo.move(50, 50)
+        self.lbl.move(50, 150)
+
+        combo.activated[str].connect(self.onActivated)
 
         self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('Calendar')
+        self.setWindowTitle('Red rock')
         self.show()
 
-    def showDate(self, date):
-        self.lbl.setText(date.toString())
+    def onActivated(self, text):
+        self.lbl.setText(text)
+        self.lbl.adjustSize()
 
     def closeEvent(self, event):
         reply = QtGui.QMessageBox.question(self, 'Message', "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
